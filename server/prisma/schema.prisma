@@ -33,7 +33,6 @@ model User {
   vendorProfile          VendorProfile?
 
   @@unique([email])
-  @@unique([role])
   @@map("user")
 }
 
