@@ -1,10 +1,10 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../../../../common/utils/asyncHandler.ts";
-import { requireParam } from "../../../../common/utils/requireParam.ts";
 import { successResponse } from "../../../../common/utils/response.ts";
 import {
   createFaqCategorySchema,
   createFaqItemSchema,
+  faqIdParamSchema,
   listFaqItemsQuerySchema,
   updateFaqCategorySchema,
   updateFaqItemSchema,
@@ -20,6 +20,9 @@ import {
   updateFaqCategory,
   updateFaqItem,
 } from "../services/faq.service.ts";
+
+const idFromParams = (params: Request["params"]): string =>
+  faqIdParamSchema.parse(params).id;
 
 export const getFaqsHandler = asyncHandler(async (_req: Request, res: Response) => {
   successResponse(res, await getPublicFaqs(), "FAQs fetched");
@@ -43,7 +46,7 @@ export const adminUpdateFaqCategoryHandler = asyncHandler(
     const input = updateFaqCategorySchema.parse(req.body);
     successResponse(
       res,
-      await updateFaqCategory(requireParam(req.params.id, "id"), input),
+      await updateFaqCategory(idFromParams(req.params), input),
       "FAQ category updated"
     );
   }
@@ -53,7 +56,7 @@ export const adminDeleteFaqCategoryHandler = asyncHandler(
   async (req: Request, res: Response) => {
     successResponse(
       res,
-      await deleteFaqCategory(requireParam(req.params.id, "id")),
+      await deleteFaqCategory(idFromParams(req.params)),
       "FAQ category deleted"
     );
   }
@@ -78,7 +81,7 @@ export const adminUpdateFaqItemHandler = asyncHandler(
     const input = updateFaqItemSchema.parse(req.body);
     successResponse(
       res,
-      await updateFaqItem(requireParam(req.params.id, "id"), input),
+      await updateFaqItem(idFromParams(req.params), input),
       "FAQ item updated"
     );
   }
@@ -88,7 +91,7 @@ export const adminDeleteFaqItemHandler = asyncHandler(
   async (req: Request, res: Response) => {
     successResponse(
       res,
-      await deleteFaqItem(requireParam(req.params.id, "id")),
+      await deleteFaqItem(idFromParams(req.params)),
       "FAQ item deleted"
     );
   }

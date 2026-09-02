@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { registry } from "../../../lib/openapi/registry.ts";
 import { bearerAuth } from "../../../lib/openapi/security.ts";
 import {
@@ -9,6 +8,7 @@ import {
 import {
   createFaqCategorySchema,
   createFaqItemSchema,
+  faqIdParamSchema,
   listFaqItemsQuerySchema,
   updateFaqCategorySchema,
   updateFaqItemSchema,
@@ -58,7 +58,7 @@ registry.registerPath({
   summary: "Update FAQ category (admin)",
   security: bearerAuth,
   request: {
-    params: z.object({ id: z.string().min(1) }),
+    params: faqIdParamSchema,
     body: jsonBody(updateFaqCategorySchema),
   },
   responses: {
@@ -73,10 +73,10 @@ registry.registerPath({
   tags: [TAG],
   summary: "Delete FAQ category (admin)",
   security: bearerAuth,
-  request: { params: z.object({ id: z.string().min(1) }) },
+  request: { params: faqIdParamSchema },
   responses: {
     200: successResponse("FAQ category deleted"),
-    ...errorResponses(401, 403, 404, 409),
+    ...errorResponses(400, 401, 403, 404, 409),
   },
 });
 
@@ -89,7 +89,7 @@ registry.registerPath({
   request: { query: listFaqItemsQuerySchema },
   responses: {
     200: successResponse("FAQ items fetched"),
-    ...errorResponses(400, 401, 403),
+    ...errorResponses(400, 401, 403, 404),
   },
 });
 
@@ -113,7 +113,7 @@ registry.registerPath({
   summary: "Update FAQ item (admin)",
   security: bearerAuth,
   request: {
-    params: z.object({ id: z.string().min(1) }),
+    params: faqIdParamSchema,
     body: jsonBody(updateFaqItemSchema),
   },
   responses: {
@@ -128,9 +128,9 @@ registry.registerPath({
   tags: [TAG],
   summary: "Delete FAQ item (admin)",
   security: bearerAuth,
-  request: { params: z.object({ id: z.string().min(1) }) },
+  request: { params: faqIdParamSchema },
   responses: {
     200: successResponse("FAQ item deleted"),
-    ...errorResponses(401, 403, 404),
+    ...errorResponses(400, 401, 403, 404),
   },
 });

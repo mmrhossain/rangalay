@@ -7,27 +7,54 @@ export const slugSchema = z
   .max(100)
   .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Invalid slug format");
 
+export const uuidSchema = z.string().uuid();
+
+export const sortOrderSchema = z.number().int().min(0).max(1_000_000);
+
 export const createFaqCategorySchema = z.object({
   name: z.string().trim().min(1).max(200),
   slug: slugSchema,
-  sortOrder: z.number().int().default(0),
+  sortOrder: sortOrderSchema.default(0),
   isActive: z.boolean().default(true),
 });
 
-export const updateFaqCategorySchema = createFaqCategorySchema.partial();
+export const updateFaqCategorySchema = z
+  .object({
+    name: z.string().trim().min(1).max(200).optional(),
+    slug: slugSchema.optional(),
+    sortOrder: sortOrderSchema.optional(),
+    isActive: z.boolean().optional(),
+  })
+  .refine((value) => Object.values(value).some((field) => field !== undefined), {
+    message: "At least one field is required",
+  });
 
 export const createFaqItemSchema = z.object({
-  categoryId: z.string().min(1),
+  categoryId: uuidSchema,
   question: z.string().trim().min(1).max(500),
-  answer: z.string().trim().min(1),
-  sortOrder: z.number().int().default(0),
+  answer: z.string().trim().min(1).max(20000),
+  sortOrder: sortOrderSchema.default(0),
   isPublished: z.boolean().default(false),
 });
 
-export const updateFaqItemSchema = createFaqItemSchema.partial();
+export const updateFaqItemSchema = z
+  .object({
+    categoryId: uuidSchema.optional(),
+    question: z.string().trim().min(1).max(500).optional(),
+    answer: z.string().trim().min(1).max(20000).optional(),
+    sortOrder: sortOrderSchema.optional(),
+    isPublished: z.boolean().optional(),
+  })
+  .refine((value) => Object.values(value).some((field) => field !== undefined), {
+    message: "At least one field is required",
+  });
 
 export const listFaqItemsQuerySchema = z.object({
-  categoryId: z.string().min(1).optional(),
+  categoryId: uuidSchema.optional(),
+});
+
+export const faqIdParamSchema = z.object({
+  id: uuidSchema,
 });
 
 export type CreateFaqCategoryInput = z.infer<typeof createFaqCategorySchema>;

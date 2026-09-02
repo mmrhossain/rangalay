@@ -7,6 +7,12 @@ import type {
   UpdateFaqItemInput,
 } from "../validators/faq.validators.ts";
 
+const isPrismaCode = (err: unknown, code: string): boolean =>
+  typeof err === "object" &&
+  err !== null &&
+  "code" in err &&
+  (err as { code: unknown }).code === code;
+
 export const getPublicFaqs = async () => {
   return prisma.faqCategory.findMany({
     where: {
@@ -46,19 +52,21 @@ export const listFaqCategories = async () => {
 };
 
 export const createFaqCategory = async (input: CreateFaqCategoryInput) => {
-  const existing = await prisma.faqCategory.findUnique({
-    where: { slug: input.slug },
-  });
-  if (existing) throw new AppError("FAQ category slug already exists", 409);
-
-  return prisma.faqCategory.create({
-    data: {
-      name: input.name,
-      slug: input.slug,
-      sortOrder: input.sortOrder,
-      isActive: input.isActive,
-    },
-  });
+  try {
+    return await prisma.faqCategory.create({
+      data: {
+        name: input.name,
+        slug: input.slug,
+        sortOrder: input.sortOrder,
+        isActive: input.isActive,
+      },
+    });
+  } catch (err) {
+    if (isPrismaCode(err, "P2002")) {
+      throw new AppError("FAQ category slug already exists", 409);
+    }
+    throw err;
+  }
 };
 
 export const updateFaqCategory = async (
@@ -68,22 +76,22 @@ export const updateFaqCategory = async (
   const existing = await prisma.faqCategory.findUnique({ where: { id } });
   if (!existing) throw new AppError("FAQ category not found", 404);
 
-  if (input.slug && input.slug !== existing.slug) {
-    const clash = await prisma.faqCategory.findUnique({
-      where: { slug: input.slug },
+  try {
+    return await prisma.faqCategory.update({
+      where: { id },
+      data: {
+        ...(input.name !== undefined && { name: input.name }),
+        ...(input.slug !== undefined && { slug: input.slug }),
+        ...(input.sortOrder !== undefined && { sortOrder: input.sortOrder }),
+        ...(input.isActive !== undefined && { isActive: input.isActive }),
+      },
     });
-    if (clash) throw new AppError("FAQ category slug already exists", 409);
+  } catch (err) {
+    if (isPrismaCode(err, "P2002")) {
+      throw new AppError("FAQ category slug already exists", 409);
+    }
+    throw err;
   }
-
-  return prisma.faqCategory.update({
-    where: { id },
-    data: {
-      ...(input.name !== undefined && { name: input.name }),
-      ...(input.slug !== undefined && { slug: input.slug }),
-      ...(input.sortOrder !== undefined && { sortOrder: input.sortOrder }),
-      ...(input.isActive !== undefined && { isActive: input.isActive }),
-    },
-  });
 };
 
 export const deleteFaqCategory = async (id: string) => {
@@ -95,10 +103,25 @@ export const deleteFaqCategory = async (id: string) => {
     throw new AppError("Cannot delete FAQ category that still has items", 409);
   }
 
-  return prisma.faqCategory.delete({ where: { id } });
+  try {
+    return await prisma.faqCategory.delete({ where: { id } });
+  } catch (err) {
+    if (isPrismaCode(err, "P2003")) {
+      throw new AppError("Cannot delete FAQ category that still has items", 409);
+    }
+    throw err;
+  }
 };
 
 export const listFaqItems = async (categoryId?: string) => {
+  if (categoryId) {
+    const category = await prisma.faqCategory.findUnique({
+      where: { id: categoryId },
+      select: { id: true },
+    });
+    if (!category) throw new AppError("FAQ category not found", 404);
+  }
+
   return prisma.faqItem.findMany({
     where: categoryId ? { categoryId } : {},
     orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
