@@ -109,6 +109,8 @@ export const ModelName = {
   UserNotificationPreference: 'UserNotificationPreference',
   PushDevice: 'PushDevice',
   LegalDocument: 'LegalDocument',
+  FaqCategory: 'FaqCategory',
+  FaqItem: 'FaqItem',
   CMSPage: 'CMSPage',
   PageSection: 'PageSection',
   ContentBlock: 'ContentBlock',
@@ -1026,6 +1028,33 @@ export const LegalDocumentScalarFieldEnum = {
 } as const
 
 export type LegalDocumentScalarFieldEnum = (typeof LegalDocumentScalarFieldEnum)[keyof typeof LegalDocumentScalarFieldEnum]
+
+
+export const FaqCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FaqCategoryScalarFieldEnum = (typeof FaqCategoryScalarFieldEnum)[keyof typeof FaqCategoryScalarFieldEnum]
+
+
+export const FaqItemScalarFieldEnum = {
+  id: 'id',
+  question: 'question',
+  answer: 'answer',
+  sortOrder: 'sortOrder',
+  isPublished: 'isPublished',
+  categoryId: 'categoryId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FaqItemScalarFieldEnum = (typeof FaqItemScalarFieldEnum)[keyof typeof FaqItemScalarFieldEnum]
 
 
 export const CMSPageScalarFieldEnum = {

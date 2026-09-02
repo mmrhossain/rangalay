@@ -12,7 +12,6 @@ datasource db {
   provider = "postgresql"
 }
 
-
 model User {
   id            String   @id
   name          String
@@ -124,8 +123,8 @@ model Category {
   image       String?
   isActive    Boolean @default(true)
 
-  children            Category[]          @relation("CategoryHierarchy")
-  products            Product[]
+  children Category[] @relation("CategoryHierarchy")
+  products Product[]
 
   parentId String?
   parent   Category? @relation("CategoryHierarchy", fields: [parentId], references: [id])
@@ -175,9 +174,9 @@ model Product {
   brandId String?
   brand   Brand?  @relation(fields: [brandId], references: [id])
 
-  variants          ProductVariant[]
-  images            ProductImage[]
-  reviews           Review[]
+  variants ProductVariant[]
+  images   ProductImage[]
+  reviews  Review[]
 
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @updatedAt
@@ -304,24 +303,23 @@ model Review {
   @@index([isApproved])
 }
 
-
 model CustomerProfile {
-  id            String    @id @default(uuid())
-  customerCode  String    @unique
+  id            String        @id @default(uuid())
+  customerCode  String        @unique
   dateOfBirth   DateTime?
   gender        Gender?
-  loyaltyPoints Int       @default(0)
-  totalOrders   Int       @default(0)
-  totalSpent    Decimal   @default(0) @db.Decimal(18, 2)
-  addresses    Address[]
-  carts        Cart[]
-  orders       Order[]
-  couponUsages CouponUsage[]
-  wishlist   Wishlist?
-  reviews    Review[]
-  facebookId String?
-  googleId   String?
-  appleId    String?
+  loyaltyPoints Int           @default(0)
+  totalOrders   Int           @default(0)
+  totalSpent    Decimal       @default(0) @db.Decimal(18, 2)
+  addresses     Address[]
+  carts         Cart[]
+  orders        Order[]
+  couponUsages  CouponUsage[]
+  wishlist      Wishlist?
+  reviews       Review[]
+  facebookId    String?
+  googleId      String?
+  appleId       String?
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -384,7 +382,6 @@ model WishlistItem {
   @@id([wishlistId, variantId])
   @@index([variantId])
 }
-
 
 model Cart {
   id             String     @id @default(uuid())
@@ -496,13 +493,11 @@ model Order {
   shipments     Shipment[]
   couponUsages  CouponUsage[]
 
-
   billingAddress  BillingAddress?
   shippingAddress ShippingAddress?
 
   customerProfileId String
   customerProfile   CustomerProfile @relation(fields: [customerProfileId], references: [id])
-
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -609,7 +604,6 @@ model OrderEvent {
   @@index([orderId])
 }
 
-
 model Payment {
   id                String                   @id @default(uuid())
   method            PaymentMethod
@@ -625,8 +619,8 @@ model Payment {
   refunds      Refund[]
   transactions PaymentTransaction[]
   events       PaymentEvent[]
-  orderId String
-  order   Order  @relation(fields: [orderId], references: [id])
+  orderId      String
+  order        Order                @relation(fields: [orderId], references: [id])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -995,7 +989,6 @@ model ShipmentEvent {
   @@index([shipmentId])
 }
 
-
 model Coupon {
   id                    String       @id @default(uuid())
   code                  String       @unique
@@ -1043,7 +1036,6 @@ model CouponUsage {
   @@index([couponId])
   @@index([customerProfileId])
 }
-
 
 model NotificationTemplate {
   id        String              @id @default(uuid())
@@ -1136,7 +1128,6 @@ model PushDevice {
   @@index([userId])
 }
 
-
 model LegalDocument {
   id          String            @id @default(uuid())
   type        LegalDocumentType
@@ -1151,6 +1142,37 @@ model LegalDocument {
 
   @@unique([type, version])
   @@index([type, status])
+}
+
+model FaqCategory {
+  id        String  @id @default(uuid())
+  name      String
+  slug      String  @unique
+  sortOrder Int     @default(0)
+  isActive  Boolean @default(true)
+
+  items FaqItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
+}
+
+model FaqItem {
+  id          String  @id @default(uuid())
+  question    String
+  answer      String  @db.Text
+  sortOrder   Int     @default(0)
+  isPublished Boolean @default(false)
+
+  categoryId String
+  category   FaqCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([categoryId, isPublished, sortOrder])
 }
 
 model CMSPage {
@@ -1317,7 +1339,6 @@ model SeoMetadata {
   @@index([entityType, entityId])
 }
 
-
 model MediaAsset {
   id       String  @id @default(uuid())
   publicId String  @unique
@@ -1335,7 +1356,6 @@ model MediaAsset {
 
   @@index([publicId])
 }
-
 
 // enum type start
 

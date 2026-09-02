@@ -455,6 +455,8 @@ export const ModelName = {
   UserNotificationPreference: 'UserNotificationPreference',
   PushDevice: 'PushDevice',
   LegalDocument: 'LegalDocument',
+  FaqCategory: 'FaqCategory',
+  FaqItem: 'FaqItem',
   CMSPage: 'CMSPage',
   PageSection: 'PageSection',
   ContentBlock: 'ContentBlock',
@@ -481,7 +483,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "jwks" | "vendorProfile" | "category" | "brand" | "product" | "productVariant" | "attribute" | "attributeValue" | "variantAttribute" | "productImage" | "review" | "customerProfile" | "address" | "wishlist" | "wishlistItem" | "cart" | "cartItem" | "cartCoupon" | "cartActivity" | "guestCart" | "order" | "orderItem" | "billingAddress" | "shippingAddress" | "orderStatusHistory" | "orderEvent" | "payment" | "paymentTransaction" | "refund" | "paymentWebhookLog" | "paymentEvent" | "warehouse" | "inventory" | "stockReservation" | "inventoryTransaction" | "inventoryAdjustment" | "inventoryTransfer" | "inventoryTransferItem" | "inventoryEvent" | "shipment" | "shipmentItem" | "shipmentTracking" | "deliveryAttempt" | "courierWebhookLog" | "shipmentAddress" | "shipmentEvent" | "coupon" | "couponUsage" | "notificationTemplate" | "notification" | "notificationLog" | "userNotificationPreference" | "pushDevice" | "legalDocument" | "cMSPage" | "pageSection" | "contentBlock" | "banner" | "blogCategory" | "blog" | "productCollection" | "productCollectionItem" | "seoRedirect" | "seoMetadata" | "mediaAsset"
+    modelProps: "user" | "session" | "account" | "verification" | "jwks" | "vendorProfile" | "category" | "brand" | "product" | "productVariant" | "attribute" | "attributeValue" | "variantAttribute" | "productImage" | "review" | "customerProfile" | "address" | "wishlist" | "wishlistItem" | "cart" | "cartItem" | "cartCoupon" | "cartActivity" | "guestCart" | "order" | "orderItem" | "billingAddress" | "shippingAddress" | "orderStatusHistory" | "orderEvent" | "payment" | "paymentTransaction" | "refund" | "paymentWebhookLog" | "paymentEvent" | "warehouse" | "inventory" | "stockReservation" | "inventoryTransaction" | "inventoryAdjustment" | "inventoryTransfer" | "inventoryTransferItem" | "inventoryEvent" | "shipment" | "shipmentItem" | "shipmentTracking" | "deliveryAttempt" | "courierWebhookLog" | "shipmentAddress" | "shipmentEvent" | "coupon" | "couponUsage" | "notificationTemplate" | "notification" | "notificationLog" | "userNotificationPreference" | "pushDevice" | "legalDocument" | "faqCategory" | "faqItem" | "cMSPage" | "pageSection" | "contentBlock" | "banner" | "blogCategory" | "blog" | "productCollection" | "productCollectionItem" | "seoRedirect" | "seoMetadata" | "mediaAsset"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4777,6 +4779,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    FaqCategory: {
+      payload: Prisma.$FaqCategoryPayload<ExtArgs>
+      fields: Prisma.FaqCategoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FaqCategoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqCategoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FaqCategoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqCategoryPayload>
+        }
+        findFirst: {
+          args: Prisma.FaqCategoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqCategoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FaqCategoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqCategoryPayload>
+        }
+        findMany: {
+          args: Prisma.FaqCategoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqCategoryPayload>[]
+        }
+        create: {
+          args: Prisma.FaqCategoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqCategoryPayload>
+        }
+        createMany: {
+          args: Prisma.FaqCategoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FaqCategoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqCategoryPayload>[]
+        }
+        delete: {
+          args: Prisma.FaqCategoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqCategoryPayload>
+        }
+        update: {
+          args: Prisma.FaqCategoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqCategoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.FaqCategoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FaqCategoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FaqCategoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqCategoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.FaqCategoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqCategoryPayload>
+        }
+        aggregate: {
+          args: Prisma.FaqCategoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFaqCategory>
+        }
+        groupBy: {
+          args: Prisma.FaqCategoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FaqCategoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FaqCategoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FaqCategoryCountAggregateOutputType> | number
+        }
+      }
+    }
+    FaqItem: {
+      payload: Prisma.$FaqItemPayload<ExtArgs>
+      fields: Prisma.FaqItemFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FaqItemFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqItemPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FaqItemFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqItemPayload>
+        }
+        findFirst: {
+          args: Prisma.FaqItemFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqItemPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FaqItemFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqItemPayload>
+        }
+        findMany: {
+          args: Prisma.FaqItemFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqItemPayload>[]
+        }
+        create: {
+          args: Prisma.FaqItemCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqItemPayload>
+        }
+        createMany: {
+          args: Prisma.FaqItemCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FaqItemCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqItemPayload>[]
+        }
+        delete: {
+          args: Prisma.FaqItemDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqItemPayload>
+        }
+        update: {
+          args: Prisma.FaqItemUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqItemPayload>
+        }
+        deleteMany: {
+          args: Prisma.FaqItemDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FaqItemUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FaqItemUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqItemPayload>[]
+        }
+        upsert: {
+          args: Prisma.FaqItemUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FaqItemPayload>
+        }
+        aggregate: {
+          args: Prisma.FaqItemAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFaqItem>
+        }
+        groupBy: {
+          args: Prisma.FaqItemGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FaqItemGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FaqItemCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FaqItemCountAggregateOutputType> | number
+        }
+      }
+    }
     CMSPage: {
       payload: Prisma.$CMSPagePayload<ExtArgs>
       fields: Prisma.CMSPageFieldRefs
@@ -6520,6 +6670,33 @@ export const LegalDocumentScalarFieldEnum = {
 export type LegalDocumentScalarFieldEnum = (typeof LegalDocumentScalarFieldEnum)[keyof typeof LegalDocumentScalarFieldEnum]
 
 
+export const FaqCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FaqCategoryScalarFieldEnum = (typeof FaqCategoryScalarFieldEnum)[keyof typeof FaqCategoryScalarFieldEnum]
+
+
+export const FaqItemScalarFieldEnum = {
+  id: 'id',
+  question: 'question',
+  answer: 'answer',
+  sortOrder: 'sortOrder',
+  isPublished: 'isPublished',
+  categoryId: 'categoryId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FaqItemScalarFieldEnum = (typeof FaqItemScalarFieldEnum)[keyof typeof FaqItemScalarFieldEnum]
+
+
 export const CMSPageScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -7419,6 +7596,8 @@ export type GlobalOmitConfig = {
   userNotificationPreference?: Prisma.UserNotificationPreferenceOmit
   pushDevice?: Prisma.PushDeviceOmit
   legalDocument?: Prisma.LegalDocumentOmit
+  faqCategory?: Prisma.FaqCategoryOmit
+  faqItem?: Prisma.FaqItemOmit
   cMSPage?: Prisma.CMSPageOmit
   pageSection?: Prisma.PageSectionOmit
   contentBlock?: Prisma.ContentBlockOmit

@@ -332,6 +332,16 @@ export type PushDevice = Prisma.PushDeviceModel
  */
 export type LegalDocument = Prisma.LegalDocumentModel
 /**
+ * Model FaqCategory
+ * 
+ */
+export type FaqCategory = Prisma.FaqCategoryModel
+/**
+ * Model FaqItem
+ * 
+ */
+export type FaqItem = Prisma.FaqItemModel
+/**
  * Model CMSPage
  * 
  */
