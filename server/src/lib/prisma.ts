@@ -40,5 +40,9 @@ export const transaction = <T>(
   fn: (tx: TransactionClient) => Promise<T>,
   options?: { isolationLevel?: Prisma.TransactionIsolationLevel }
 ): Promise<T> => {
-  return prisma.$transaction(fn, options);
+  return prisma.$transaction(fn, {
+    maxWait: env.NODE_ENV === "test" ? 20_000 : 2_000,
+    timeout: env.NODE_ENV === "test" ? 30_000 : 5_000,
+    ...options,
+  });
 };

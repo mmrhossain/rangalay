@@ -3,11 +3,14 @@ import { RedisStore, type RedisReply } from "rate-limit-redis";
 import { env } from "../../config/env.ts";
 import { redis } from "../../lib/redis.ts";
 
+const skipInTest = () => env.NODE_ENV === "test";
+
 export const limiter = rateLimit({
   windowMs: env.RATE_LIMIT_WINDOW_MS,
   max: env.RATE_LIMIT_MAX_REQUESTS,
   standardHeaders: true,
   legacyHeaders: false,
+  skip: skipInTest,
   message: {
     success: false,
     message: "Too many requests. Please try again later.",
@@ -20,6 +23,7 @@ const perEndpointLimiter = (windowMs: number, max: number, label: string) =>
     max,
     standardHeaders: true,
     legacyHeaders: false,
+    skip: skipInTest,
     message: {
       success: false,
       message: `Too many ${label} requests. Please try again later.`,
