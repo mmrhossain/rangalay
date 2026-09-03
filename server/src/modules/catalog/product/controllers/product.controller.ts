@@ -22,7 +22,15 @@ import {
 
 export const getProducts = asyncHandler(async (req: Request, res: Response) => {
   const query = listProductsQuerySchema.parse(req.query);
-  successResponse(res, await listProducts(query), "Products fetched");
+  const role = req.auth?.user.role;
+  const canIncludeInactive =
+    query.includeInactive === true && (role === "ADMIN" || role === "VENDOR");
+
+  successResponse(
+    res,
+    await listProducts({ ...query, includeInactive: canIncludeInactive }),
+    "Products fetched"
+  );
 });
 
 export const getProduct = asyncHandler(async (req: Request, res: Response) => {

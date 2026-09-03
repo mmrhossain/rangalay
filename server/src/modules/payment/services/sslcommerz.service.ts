@@ -47,100 +47,20 @@ const assertAmountMatches = (expected: number, actual?: number) => {
 export const handleSslcommerzSuccess = async (
   input: SslcommerzSuccessInput
 ) => {
-  const verification = await sslcommerzProvider.verifyTransaction(input.val_id);
-
-  if (!verification.valid) {
-    throw new AppError("Payment could not be verified with the gateway", 400);
-  }
-
   const payment = await findPaymentByProviderReference(input.tran_id);
-  assertAmountMatches(Number(payment.amount), verification.amount);
-
-  if (payment.status === "SUCCESS" || payment.status === "COLLECTED") {
-    return { payment: toCustomerPayment(payment) };
-  }
-
-  const updated = await prisma.payment.update({
-    where: { id: payment.id },
-    data: {
-      status: "SUCCESS",
-      paidAt: payment.paidAt ?? new Date(),
-    },
-    include: { order: true },
-  });
-
-  await prisma.$transaction([
-    prisma.paymentEvent.create({
-      data: {
-        paymentId: payment.id,
-        eventType: "PAYMENT_SUCCESS",
-        metadata: {
-          source: "sslcommerz-success",
-          valId: input.val_id,
-          verified: true,
-        },
-      },
-    }),
-    prisma.paymentTransaction.create({
-      data: {
-        paymentId: payment.id,
-        transactionReference: verification.transactionId,
-        gatewayResponse: verification.raw as object,
-        status: "SUCCESS",
-        amount: payment.amount,
-      },
-    }),
-  ]);
-
-  return { payment: toCustomerPayment(updated) };
+  return { payment: toCustomerPayment(payment) };
 };
 
 export const handleSslcommerzFail = async (input: SslcommerzFailCancelInput) => {
   const payment = await findPaymentByProviderReference(input.tran_id);
-
-  if (payment.status === "SUCCESS" || payment.status === "COLLECTED") {
-    return { payment: toCustomerPayment(payment) };
-  }
-
-  const updated = await prisma.payment.update({
-    where: { id: payment.id },
-    data: { status: "FAILED" },
-  });
-
-  await prisma.paymentEvent.create({
-    data: {
-      paymentId: payment.id,
-      eventType: "PAYMENT_FAILED",
-      metadata: { source: "sslcommerz-fail" },
-    },
-  });
-
-  return { payment: toCustomerPayment(updated) };
+  return { payment: toCustomerPayment(payment) };
 };
 
 export const handleSslcommerzCancel = async (
   input: SslcommerzFailCancelInput
 ) => {
   const payment = await findPaymentByProviderReference(input.tran_id);
-
-  if (payment.status === "SUCCESS" || payment.status === "COLLECTED") {
-    return { payment: toCustomerPayment(payment) };
-  }
-
-  const updated = await prisma.payment.update({
-    where: { id: payment.id },
-    data: { status: "CANCELLED" },
-  });
-
-  await prisma.paymentEvent.create({
-    data: {
-      paymentId: payment.id,
-      eventType: "PAYMENT_CANCELLED",
-      metadata: { source: "sslcommerz-cancel" },
-    },
-  });
-
-  return { payment: toCustomerPayment(updated) };
+  return { payment: toCustomerPayment(payment) };
 };
 
 export const handleSslcommerzIpn = async (input: SslcommerzIpnInput) => {

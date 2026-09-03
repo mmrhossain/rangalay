@@ -24,13 +24,9 @@ const toHeaders = (headers: IncomingHttpHeaders): Headers => {
 
 export const requireAuth = asyncHandler(
   async (req: Request, _res: Response, next: NextFunction) => {
-
-      console.log("headers:", req.headers);
     const session = await auth.api.getSession({
       headers: toHeaders(req.headers),
     });
-
-      console.log("session:", session);
 
     if (!session) {
       throw new AppError("Unauthorized: authentication required", 401);

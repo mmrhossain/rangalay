@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  optionalAuth,
   requireAuth,
   requireRole,
   requireApproval,
@@ -18,7 +19,7 @@ import {
 const router = Router();
 
 // Public catalog
-router.get("/products", getProducts);
+router.get("/products", optionalAuth, getProducts);
 router.get("/products/:slug", getProduct);
 
 const adminAndVendor = [

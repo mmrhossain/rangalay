@@ -1,90 +1,61 @@
-import bcrypt from "bcryptjs";
+import { auth } from "../src/lib/auth.ts";
 import { prisma } from "../src/lib/prisma.ts";
 
 const ROLES = ["CUSTOMER", "ADMIN", "VENDOR"] as const;
 
 async function main() {
-  const roleRecords: Record<string, { id: string }> = {};
+  const adminEmail = process.env.SEED_ADMIN_EMAIL ?? process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD;
 
-  for (const roleName of ROLES) {
-    const role = await prisma.role.upsert({
-      where: { name: roleName },
-      update: {},
-      create: {
-        name: roleName,
-        description: `${roleName} role`,
-      },
-    });
-
-    roleRecords[roleName] = role;
+  if (!adminEmail || !adminPassword) {
+    throw new Error(
+      "SEED_ADMIN_EMAIL (or ADMIN_EMAIL) and SEED_ADMIN_PASSWORD are required"
+    );
   }
 
-  const permissions = [
-    "catalog:read",
-    "catalog:write",
-    "inventory:manage",
-    "order:read",
-    "order:write",
-    "payment:manage",
-    "coupon:manage",
-    "review:moderate",
-    "user:manage",
-  ];
-
-  for (const permName of permissions) {
-    const permission = await prisma.permission.upsert({
-      where: { name: permName },
-      update: {},
-      create: {
-        name: permName,
-        description: `Permission: ${permName}`,
-      },
-    });
-
-    await prisma.rolePermission.upsert({
-      where: {
-        roleId_permissionId: {
-          roleId: roleRecords["ADMIN"]!.id,
-          permissionId: permission.id,
-        },
-      },
-      update: {},
-      create: {
-        roleId: roleRecords["ADMIN"]!.id,
-        permissionId: permission.id,
-      },
-    });
+  if (adminPassword.length < 8) {
+    throw new Error("SEED_ADMIN_PASSWORD must be at least 8 characters");
   }
 
-  const adminEmail = process.env.ADMIN_EMAIL ?? "admin@raangalay.com";
-  const adminPassword = process.env.ADMIN_PASSWORD ?? "Admin@123";
+  let user = await prisma.user.findUnique({ where: { email: adminEmail } });
 
-  const existing = await prisma.user.findUnique({
-    where: { email: adminEmail },
-  });
-
-  if (!existing) {
-    const hashed = await bcrypt.hash(adminPassword, 10);
-
-    await prisma.user.create({
-      data: {
-        name: "Admin",
-        firstName: "Admin",
+  if (!user) {
+    const result = await auth.api.signUpEmail({
+      body: {
         email: adminEmail,
-        password: hashed,
+        password: adminPassword,
+        name: "Admin",
+      },
+    });
+
+    const createdId = result.user?.id;
+    if (!createdId) {
+      throw new Error("Better Auth signUpEmail did not return a user id");
+    }
+
+    user = await prisma.user.update({
+      where: { id: createdId },
+      data: {
+        role: "ADMIN",
         emailVerified: true,
         isApproved: true,
-        role: "ADMIN",
-        roleId: roleRecords["ADMIN"]!.id,
       },
     });
 
     console.log(`[seed] admin user created: ${adminEmail}`);
   } else {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        role: "ADMIN",
+        emailVerified: true,
+        isApproved: true,
+      },
+    });
     console.log(`[seed] admin user already exists: ${adminEmail}`);
   }
 
-  console.log("[seed] roles, permissions and admin user ready");
+  console.log("[seed] roles ready:", ROLES.join(", "));
 }
 
 main()
