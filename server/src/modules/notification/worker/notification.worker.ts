@@ -4,10 +4,10 @@ import { resend } from "../../../lib/resend.ts";
 import { env } from "../../../config/env.ts";
 import { Prisma } from "../../../generated/prisma/client.ts";
 
-const POLL_INTERVAL_MS = 30_000;
+const POLL_INTERVAL_MS = 60_000;
 const BATCH_SIZE = 50;
 const DB_RETRY_ATTEMPTS = 3;
-const DB_RETRY_BASE_MS = 1_000;
+const DB_RETRY_BASE_MS = 3_000;
 
 type ClaimedRow = {
   id: string;
@@ -26,6 +26,7 @@ type DeliveryResult = {
 
 let intervalId: NodeJS.Timeout | null = null;
 let running = false;
+let cycleInFlight = false;
 let neonSuspendHintLogged = false;
 
 const TRANSIENT_DB_CODES = new Set([
@@ -231,6 +232,8 @@ export const startNotificationWorker = (options?: { intervalMs?: number }) => {
   const intervalMs = options?.intervalMs ?? POLL_INTERVAL_MS;
 
   const cycle = async () => {
+    if (cycleInFlight) return;
+    cycleInFlight = true;
     try {
       const processed = await processPendingNotifications();
       if (processed > 0) {
@@ -245,6 +248,8 @@ export const startNotificationWorker = (options?: { intervalMs?: number }) => {
         `[notification-worker] poll cycle failed after retries; waiting for next cycle:`,
         message
       );
+    } finally {
+      cycleInFlight = false;
     }
   };
 

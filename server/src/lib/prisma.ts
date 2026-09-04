@@ -21,9 +21,9 @@ if (!looksPooled) {
 
 const adapter = new PrismaPg({
   connectionString,
-  max: 5,
-  connectionTimeoutMillis: 15_000,
-  idleTimeoutMillis: 30_000,
+  max: 3,
+  connectionTimeoutMillis: 10_000,
+  idleTimeoutMillis: 20_000,
   keepAlive: true,
 });
 
