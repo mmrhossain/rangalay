@@ -24,7 +24,7 @@ export const sessionCookie = async (sessionToken: string) => {
 
 export const createTestUser = async (
   tracker: CleanupTracker,
-  opts?: { role?: TestRole; suffix?: string }
+  opts?: { role?: TestRole; suffix?: string; isApproved?: boolean }
 ): Promise<TestUser> => {
   const id = randomUUID();
   const suffix = opts?.suffix ?? randomUUID().slice(0, 8);
@@ -38,7 +38,7 @@ export const createTestUser = async (
       email,
       emailVerified: true,
       role,
-      isApproved: true,
+      isApproved: opts?.isApproved ?? true,
     },
   });
   tracker.userIds.push(id);

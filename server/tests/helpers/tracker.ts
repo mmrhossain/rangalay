@@ -17,6 +17,10 @@ export class CleanupTracker {
   paymentIds: string[] = [];
   webhookLogIds: string[] = [];
   cartIds: string[] = [];
+  guestCartSessionIds: string[] = [];
+  reviewIds: string[] = [];
+  faqCategoryIds: string[] = [];
+  faqItemIds: string[] = [];
 
   async cleanup() {
     const orders = [...this.orderIds];
@@ -27,8 +31,12 @@ export class CleanupTracker {
     const coupons = [...this.couponIds];
     const warehouses = [...this.warehouseIds];
     const inventories = [...this.inventoryIds];
-    const carts = [...this.cartIds];
-    const webhookLogs = [...this.webhookLogIds];
+      const carts = [...this.cartIds];
+      const guestCartSessionIds = [...this.guestCartSessionIds];
+      const webhookLogs = [...this.webhookLogIds];
+      const reviews = [...this.reviewIds];
+      const faqCategories = [...this.faqCategoryIds];
+      const faqItems = [...this.faqItemIds];
     const categories = [...this.categoryIds];
     const brands = [...this.brandIds];
 
@@ -105,6 +113,29 @@ export class CleanupTracker {
         await prisma.coupon.deleteMany({ where: { id: { in: coupons } } });
       }
 
+      if (reviews.length) {
+        await prisma.review.deleteMany({ where: { id: { in: reviews } } });
+      }
+
+      if (faqItems.length) {
+        await prisma.faqItem.deleteMany({ where: { id: { in: faqItems } } });
+      }
+
+      if (faqCategories.length) {
+        await prisma.faqItem.deleteMany({
+          where: { categoryId: { in: faqCategories } },
+        });
+        await prisma.faqCategory.deleteMany({
+          where: { id: { in: faqCategories } },
+        });
+      }
+
+      if (guestCartSessionIds.length) {
+        await prisma.guestCart.deleteMany({
+          where: { sessionId: { in: guestCartSessionIds } },
+        });
+      }
+
       if (carts.length) {
         await prisma.cartCoupon.deleteMany({ where: { cartId: { in: carts } } });
         await prisma.cartActivity.deleteMany({
@@ -130,10 +161,16 @@ export class CleanupTracker {
         await prisma.inventoryTransaction.deleteMany({
           where: { variantId: { in: variants } },
         });
+        await prisma.inventoryAdjustment.deleteMany({
+          where: { variantId: { in: variants } },
+        });
         await prisma.inventory.deleteMany({
           where: { variantId: { in: variants } },
         });
         await prisma.cartItem.deleteMany({
+          where: { variantId: { in: variants } },
+        });
+        await prisma.wishlistItem.deleteMany({
           where: { variantId: { in: variants } },
         });
         await prisma.productVariant.deleteMany({
@@ -142,6 +179,9 @@ export class CleanupTracker {
       }
 
       if (products.length) {
+        await prisma.review.deleteMany({
+          where: { productId: { in: products } },
+        });
         await prisma.productImage.deleteMany({
           where: { productId: { in: products } },
         });
@@ -166,6 +206,17 @@ export class CleanupTracker {
       }
 
       if (users.length) {
+        const userEmails = await prisma.user.findMany({
+          where: { id: { in: users } },
+          select: { email: true },
+        });
+        const emails = userEmails.map((u) => u.email);
+        if (emails.length) {
+          await prisma.verification.deleteMany({
+            where: { identifier: { in: emails } },
+          });
+        }
+
         const profiles = await prisma.customerProfile.findMany({
           where: { userId: { in: users } },
           select: { id: true },
@@ -194,6 +245,22 @@ export class CleanupTracker {
           await prisma.couponUsage.deleteMany({
             where: { customerProfileId: { in: profileIds } },
           });
+          await prisma.review.deleteMany({
+            where: { customerProfileId: { in: profileIds } },
+          });
+          const wishlists = await prisma.wishlist.findMany({
+            where: { customerProfileId: { in: profileIds } },
+            select: { id: true },
+          });
+          const wishlistIds = wishlists.map((w) => w.id);
+          if (wishlistIds.length) {
+            await prisma.wishlistItem.deleteMany({
+              where: { wishlistId: { in: wishlistIds } },
+            });
+            await prisma.wishlist.deleteMany({
+              where: { id: { in: wishlistIds } },
+            });
+          }
           await prisma.customerProfile.deleteMany({
             where: { id: { in: profileIds } },
           });
@@ -215,6 +282,10 @@ export class CleanupTracker {
       this.paymentIds = [];
       this.webhookLogIds = [];
       this.cartIds = [];
+      this.guestCartSessionIds = [];
+      this.reviewIds = [];
+      this.faqCategoryIds = [];
+      this.faqItemIds = [];
     }
   }
 }
