@@ -3,22 +3,30 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../generated/prisma/client";
 import type { Prisma } from "../generated/prisma/client";
 
-// 2. Connection string
 const connectionString = env.DATABASE_URL;
 
-
-// 1. Validate env (important in production)
 if (!env.DATABASE_URL) {
   throw new Error("DATABASE_URL is not defined");
 }
 
+const looksPooled =
+  /[-.]pooler\./i.test(connectionString) ||
+  /(?:[?&])pgbouncer=true/i.test(connectionString);
 
-// 3. Adapter (PostgreSQL pooling)
+if (!looksPooled) {
+  console.info(
+    "[prisma] DATABASE_URL does not look like a Neon pooled/pgbouncer endpoint. Use the pooler connection string for workers/backends to reduce connection pressure."
+  );
+}
+
 const adapter = new PrismaPg({
   connectionString,
+  max: 5,
+  connectionTimeoutMillis: 15_000,
+  idleTimeoutMillis: 30_000,
+  keepAlive: true,
 });
 
-// 4. Singleton pattern (VERY IMPORTANT for dev + hot reload)
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
@@ -29,7 +37,6 @@ export const prisma =
     adapter,
   });
 
-// Prevent multiple instances in development
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
 }
