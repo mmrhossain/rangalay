@@ -17,6 +17,7 @@ import "../../modules/review/review.openapi.ts";
 import "../../modules/ai/ai.openapi.ts";
 import "../../modules/content/legal/legal.openapi.ts";
 import "../../modules/content/faq/faq.openapi.ts";
+import "../../modules/analytics/analytics.openapi.ts";
 
 export function generateOpenApiDocument() {
   const generator = new OpenApiGeneratorV3(registry.definitions);

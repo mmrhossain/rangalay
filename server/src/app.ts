@@ -24,6 +24,7 @@ import wishlistRoutes from "./modules/wishlist/index.ts";
 import reviewRoutes from "./modules/review/index.ts";
 import aiRoutes from "./modules/ai/index.ts";
 import contentRoutes from "./modules/content/index.ts";
+import analyticsRoutes from "./modules/analytics/index.ts";
 import {auth} from "./lib/auth.ts";
 import { generateOpenApiDocument } from "./lib/openapi/document.ts";
 
@@ -143,6 +144,7 @@ app.use("/api/v1", wishlistRoutes);
 app.use("/api/v1", reviewRoutes);
 app.use("/api/v1", aiRoutes);
 app.use("/api/v1", contentRoutes);
+app.use("/api/v1", analyticsRoutes);
 
 /**
  * 404 Handler
