@@ -19,8 +19,25 @@ export type ProductListItem = {
   images: Array<{ imageUrl: string }>;
   variants: Array<{
     id: string;
+    sku?: string;
     price: number | string;
     compareAtPrice?: number | string | null;
+  }>;
+};
+
+export type ProductDetail = {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  shortDescription?: string | null;
+  category?: { id: string; name: string; slug: string } | null;
+  brand?: { id: string; name: string; slug: string } | null;
+  variants: Array<{
+    id: string;
+    sku: string;
+    price: number | string;
+    availableStock?: number;
   }>;
 };
 
@@ -60,6 +77,100 @@ export async function fetchProductList(
         sort: "newest",
       },
     }
+  );
+  return res.data;
+}
+
+export type CatalogOption = {
+  id: string;
+  name: string;
+  slug: string;
+};
+
+export type CreateProductBody = {
+  name: string;
+  slug: string;
+  description?: string;
+  shortDescription?: string;
+  categoryId: string;
+  brandId?: string | null;
+  isPublished?: boolean;
+  isFeatured?: boolean;
+};
+
+export type CreateVariantBody = {
+  sku: string;
+  price: number;
+  isDefault?: boolean;
+};
+
+export async function fetchProductBySlug(slug: string): Promise<ProductDetail> {
+  const res = await dashboardApi.get<Envelope<ProductDetail>>(
+    `/api/v1/products/${slug}`,
+    noStore
+  );
+  return res.data;
+}
+
+export async function fetchCategories(): Promise<CatalogOption[]> {
+  const res = await dashboardApi.get<Envelope<CatalogOption[]>>(
+    "/api/v1/categories",
+    noStore
+  );
+  return res.data ?? [];
+}
+
+export async function fetchBrands(): Promise<CatalogOption[]> {
+  const res = await dashboardApi.get<Envelope<CatalogOption[]>>(
+    "/api/v1/brands",
+    noStore
+  );
+  return res.data ?? [];
+}
+
+export async function createProduct(
+  body: CreateProductBody
+): Promise<{ id: string }> {
+  const res = await dashboardApi.post<Envelope<{ id: string }>>(
+    "/api/v1/admin/products",
+    { body }
+  );
+  return res.data;
+}
+
+export async function updateProduct(
+  id: string,
+  body: Partial<CreateProductBody>
+): Promise<{ id: string }> {
+  const res = await dashboardApi.put<Envelope<{ id: string }>>(
+    `/api/v1/admin/products/${id}`,
+    { body }
+  );
+  return res.data;
+}
+
+export async function deleteProduct(id: string): Promise<void> {
+  await dashboardApi.delete<Envelope<unknown>>(`/api/v1/admin/products/${id}`);
+}
+
+export async function createProductVariant(
+  productId: string,
+  body: CreateVariantBody
+): Promise<{ id: string }> {
+  const res = await dashboardApi.post<Envelope<{ id: string }>>(
+    `/api/v1/admin/products/${productId}/variants`,
+    { body }
+  );
+  return res.data;
+}
+
+export async function updateProductVariant(
+  id: string,
+  body: Partial<CreateVariantBody>
+): Promise<{ id: string }> {
+  const res = await dashboardApi.put<Envelope<{ id: string }>>(
+    `/api/v1/admin/variants/${id}`,
+    { body }
   );
   return res.data;
 }

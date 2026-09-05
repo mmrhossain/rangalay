@@ -9,6 +9,8 @@ import {
   type LegacyColumnDef,
 } from "@tanstack/react-table/legacy";
 
+import { ProductDeleteDialog } from "@/components/admin/products/product-delete-dialog";
+import { ProductFormDialog } from "@/components/admin/products/product-form-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -44,6 +46,13 @@ export function ProductTable({ initialData }: Props) {
   const [page, setPage] = useState(initialData.pagination.page);
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
+  const [formOpen, setFormOpen] = useState(false);
+  const [formMode, setFormMode] = useState<"create" | "edit">("create");
+  const [editingProduct, setEditingProduct] = useState<ProductListItem | undefined>();
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deletingProduct, setDeletingProduct] = useState<ProductListItem | null>(
+    null
+  );
 
   useEffect(() => {
     const t = window.setTimeout(() => {
@@ -125,10 +134,27 @@ export function ProductTable({ initialData }: Props) {
         header: "Actions",
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <Button asChild variant="outline" size="sm">
-              <a href={`/admin/products/${row.original.id}/edit`}>Edit</a>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setFormMode("edit");
+                setEditingProduct(row.original);
+                setFormOpen(true);
+              }}
+            >
+              Edit
             </Button>
-            <Button type="button" variant="destructive" size="sm" disabled>
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              onClick={() => {
+                setDeletingProduct(row.original);
+                setDeleteOpen(true);
+              }}
+            >
               Delete
             </Button>
           </div>
@@ -157,9 +183,21 @@ export function ProductTable({ initialData }: Props) {
           aria-label="Search products"
           className="max-w-sm"
         />
-        <p className="text-sm text-muted-foreground">
-          {pagination.total} products
-        </p>
+        <div className="flex items-center gap-3">
+          <p className="text-sm text-muted-foreground">
+            {pagination.total} products
+          </p>
+          <Button
+            type="button"
+            onClick={() => {
+              setFormMode("create");
+              setEditingProduct(undefined);
+              setFormOpen(true);
+            }}
+          >
+            Add Product
+          </Button>
+        </div>
       </div>
 
       {query.isError ? (
@@ -241,6 +279,18 @@ export function ProductTable({ initialData }: Props) {
           </Button>
         </div>
       </div>
+
+      <ProductFormDialog
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        mode={formMode}
+        initialData={formMode === "edit" ? editingProduct : undefined}
+      />
+      <ProductDeleteDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        product={deletingProduct}
+      />
     </div>
   );
 }
