@@ -4,8 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -132,7 +130,6 @@
     /*}*/
 }
 
-
 html {
     scroll-behavior: smooth;
 }
@@ -181,8 +178,6 @@ html {
 * {
     scrollbar-width: thin;
 }
-
-
 
 @layer components {
     .page-section {

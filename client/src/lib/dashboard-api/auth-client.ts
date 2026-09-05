@@ -6,7 +6,7 @@ const normalize = (value: string | undefined): string =>
 
 const dashboardOrigin =
   normalize(process.env.NEXT_PUBLIC_DASHBOARD_API_URL) ||
-  (typeof window === "undefined" ? "http://127.0.0.1:5000" : "");
+  (typeof window === "undefined" ? "http://127.0.0.1:5000" : "/backend-proxy");
 
 export const dashboardAuthClient = createAuthClient({
   baseURL: dashboardOrigin || undefined,

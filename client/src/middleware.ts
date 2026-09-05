@@ -49,15 +49,10 @@ export async function middleware(request: NextRequest) {
     return redirectToLogin(request);
   }
 
-  const origin = BACKEND_ORIGIN;
-  if (!origin) {
-    // No reachable backend origin configured - fail closed rather than
-    // silently granting access.
-    return redirectToLogin(request);
-  }
+  const origin = BACKEND_ORIGIN || "http://127.0.0.1:5000";
 
   try {
-    const res = await fetch(`${origin}/api/auth/get-session`, {
+    const res = await fetch(`${origin}/api/v1/auth/get-session`, {
       method: "GET",
       headers: {
         accept: "application/json",
