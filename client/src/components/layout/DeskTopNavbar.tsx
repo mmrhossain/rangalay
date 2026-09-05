@@ -17,14 +17,11 @@ import { useCartStore } from "@/store/useCartStore";
 import { useWishStore } from "@/store/useWishStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import { slugify, successToast } from "@/utils";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/Dropdown-menu";
+
 import SearchBox from "@/components/shared/SearchBox";
 import { getUser } from "@/utils";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
+
 
 const DeskTopNavbar = ({ categories }: { categories: Category[] }) => {
     const { cartCount} = useCartStore();

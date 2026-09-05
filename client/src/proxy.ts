@@ -36,7 +36,7 @@ function redirectToLogin(request: NextRequest): NextResponse {
  * home, and an unapproved vendor is confined to /vendor/pending. The backend
  * session is verified server-side (never trust the client to self-report).
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const area = areaForPath(pathname);
   if (!area) {

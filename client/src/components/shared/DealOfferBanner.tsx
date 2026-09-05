@@ -2,10 +2,10 @@
 
 import React, { useMemo } from "react";
 import { useCountDown } from "@/hooks/useCountDown";
-import CustomButton from "@/components/ui/CustomButton";
 import { ArrowRight, Sparkles } from "lucide-react";
 import Image from "next/image";
 import VideoPlayer from "@/components/shared/VideoPlayer";
+import CustomButton from "@/components/button/Custom.button";
 
 const DealOfferBanner = () => {
   const targetDate = useMemo(() => Date.now() + 500 * 60 * 60 * 1000, []);

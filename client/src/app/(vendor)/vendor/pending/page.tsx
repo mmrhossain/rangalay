@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { Clock } from "lucide-react";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/Card";
+} from "@/components/ui/card";
 
 /**
  * Vendor pending-approval page.

@@ -9,8 +9,8 @@ import { Remark } from "@/types/remark";
 import { Product } from "@/types/product";
 import ProductsSkeleton from "@/skeleton/productsSkeleton";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import CustomButton from '../ui/CustomButton';
 import {ArrowRight} from "lucide-react";
+import CustomButton from "@/components/button/Custom.button";
 
 
 const ProductListByRemark = () => {

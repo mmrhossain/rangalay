@@ -1,7 +1,7 @@
 "use client";
 
 import { Category } from "@/types/category";
-import { Card } from "@/components/ui/Card";
+import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
 import { slugify } from "@/utils";

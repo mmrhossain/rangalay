@@ -1,7 +1,7 @@
 import React from 'react';
 import { Input } from "@/components/ui/input";
-import CustomButton from "@/components/ui/CustomButton";
-import { SendHorizontal } from "lucide-react"; // For a more modern feel
+import { SendHorizontal } from "lucide-react";
+import CustomButton from "@/components/button/Custom.button"; // For a more modern feel
 
 const Newsletter = () => {
     return (

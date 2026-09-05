@@ -14,7 +14,7 @@ import { Category } from "@/types/category";
 import { slugify, successToast } from "@/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useRouter } from "next/navigation";
-import SearchDrawer from "@/components/ui/SearchDrawer";
+import SearchDrawer from "@/components/shared/Search.drawer";
 
 const MobileNavbar = ({ categories }: { categories: Category[] }) => {
     const [open, setOpen] = useState<boolean>(false);

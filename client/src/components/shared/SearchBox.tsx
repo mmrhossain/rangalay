@@ -2,11 +2,11 @@
 
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/Button";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/utils";
 import { X } from "lucide-react";
+import {Button} from "@/components/ui/button";
 
 const SearchBox = ({ className = "", onClose }: { className?: string, onClose?: ()=>void }) => {
 

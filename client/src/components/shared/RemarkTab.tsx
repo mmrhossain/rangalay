@@ -3,7 +3,7 @@
 
 import { remarkList } from "@/dummyData/productList";
 import { Remark } from "@/types/remark";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import {JSX, useState} from "react";
 import RelatedProduct from "../product/RelatedProduct";
 

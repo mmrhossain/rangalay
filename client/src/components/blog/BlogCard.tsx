@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import { Card, CardFooter, CardHeader } from "@/components/ui/Card";
 import Image from "next/image";
 import { BlogPost } from "@/types/blog";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import {Card, CardFooter, CardHeader} from "@/components/ui/card";
 
 interface BlogCardProps {
     blogItem: BlogPost;

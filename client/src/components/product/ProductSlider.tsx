@@ -11,8 +11,8 @@ import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay";
 import { Slider } from "@/types/Slider";
 import { motion, useReducedMotion } from "framer-motion";
-import CustomButton from "../ui/CustomButton";
 import { ArrowRight } from "lucide-react";
+import CustomButton from "@/components/button/Custom.button";
 
 interface ProductSliderProps {
     sliders: Slider[];
