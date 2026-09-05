@@ -39,7 +39,7 @@ function resolveBaseUrl(): string {
   const envUrl = normalize(process.env.NEXT_PUBLIC_DASHBOARD_API_URL);
   if (envUrl) return envUrl;
   if (typeof window === "undefined") return "http://127.0.0.1:5000";
-  return "";
+  return "/backend-proxy";
 }
 
 function buildUrl(path: string, params?: QueryParams): string {
@@ -113,21 +113,35 @@ async function apiRequest<T>(
   if (options.body !== undefined && !headers.has("content-type")) {
     headers.set("content-type", "application/json");
   }
-  if (token) {
-    headers.set("authorization", `Bearer ${token}`);
-  }
+    if (token) {
+      headers.set("authorization", `Bearer ${token}`);
+    }
 
-  let res: Response;
-  try {
-    res = await fetch(url, {
-      method,
-      headers,
-      body:
-        options.body !== undefined ? JSON.stringify(options.body) : undefined,
-      cache: options.cache,
-      next: options.next,
-      signal: options.signal,
-    });
+    if (typeof window === "undefined" && !headers.has("cookie")) {
+      try {
+        const { cookies } = await import("next/headers");
+        const cookieHeader = (await cookies())
+          .getAll()
+          .map((c) => `${c.name}=${c.value}`)
+          .join("; ");
+        if (cookieHeader) headers.set("cookie", cookieHeader);
+      } catch {
+        // not inside a Next.js request
+      }
+    }
+
+    let res: Response;
+    try {
+      res = await fetch(url, {
+        method,
+        headers,
+        body:
+          options.body !== undefined ? JSON.stringify(options.body) : undefined,
+        cache: options.cache ?? (typeof window === "undefined" ? "no-store" : undefined),
+        next: options.next,
+        signal: options.signal,
+        credentials: "include",
+      });
   } catch (err) {
     const cause = err instanceof Error ? err.message : "Network request failed";
     throw new DashboardApiError(`Network error: ${cause}`, 0);

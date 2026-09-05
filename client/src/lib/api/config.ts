@@ -32,4 +32,4 @@ export const CUSTOMER_ROLE = process.env.BACKEND_CUSTOMER_ROLE || "CUSTOMER";
  * Better Auth cookie name does not clash with it. Backend runs Better Auth at
  * /api/auth with the default cookie prefix.
  */
-export const SESSION_COOKIE = "better-auth.session_token";
+export const SESSION_COOKIE = "rangalay.session_token";
