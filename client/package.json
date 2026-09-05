@@ -10,7 +10,8 @@
     "type-check": "tsc --noEmit",
     "qa:lighthouse:mobile": "node scripts/mobile-qa-lighthouse.mjs",
     "export": "next build",
-    "generate:api": "node src/lib/api/generate.mjs"
+    "generate:api": "node src/lib/api/generate.mjs",
+    "generate:dashboard-api": "node src/lib/dashboard-api/generate.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
