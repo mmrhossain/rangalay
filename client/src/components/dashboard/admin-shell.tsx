@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { ThemeProvider } from "next-themes";
 
 import { AdminSidebar } from "@/components/dashboard/admin-sidebar";
@@ -13,7 +14,9 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
       <DashboardQueryProvider>
         <SidebarProvider>
-          <AdminSidebar />
+          <Suspense fallback={null}>
+            <AdminSidebar />
+          </Suspense>
           <SidebarInset>
             <AdminTopbar />
             {children}

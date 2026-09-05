@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   LayoutDashboard,
   Package,
@@ -36,12 +36,14 @@ const NAV = [
   { href: "/admin/payments", label: "Payments", icon: CreditCard },
   { href: "/admin/coupons", label: "Coupons", icon: TicketPercent },
   { href: "/admin/reviews", label: "Reviews", icon: Star },
-  { href: "/admin/vendors", label: "Vendors", icon: Store },
+  { href: "/admin/users?role=VENDOR", label: "Vendors", icon: Store },
   { href: "/admin/users", label: "Users", icon: Users },
 ] as const;
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const vendorFilter = searchParams.get("role") === "VENDOR";
 
   return (
     <Sidebar collapsible="icon">
@@ -64,7 +66,11 @@ export function AdminSidebar() {
                 const active =
                   item.href === "/admin"
                     ? pathname === "/admin"
-                    : pathname.startsWith(item.href);
+                    : item.href === "/admin/users?role=VENDOR"
+                      ? pathname === "/admin/users" && vendorFilter
+                      : item.href === "/admin/users"
+                        ? pathname === "/admin/users" && !vendorFilter
+                        : pathname.startsWith(item.href);
                 return (
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton asChild isActive={active} tooltip={item.label}>
